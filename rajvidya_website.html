@@ -1229,6 +1229,7 @@ let scene, camera, renderer, cssRenderer;
 let starsGroup, orreryGroup, testimonialsGroup, unisGroup, cityscapeGroup;
 let stars = [], planets = [], testimonialObjects = [], uniObjects = [];
 let scrollProgress = 0, lerpProgress = 0;
+let isDragging = false;
 const lerpSpeed = 0.08;
 
 // Spline paths
@@ -1548,7 +1549,6 @@ function setupCSS3DObjects() {
     testimonialObjects.push(cssObj);
   });
   
-  let isDragging = false;
   let prevMousePos = { x: 0, y: 0 };
   
   const handleDragStart = (x, y) => {
