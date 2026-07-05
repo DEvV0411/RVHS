@@ -427,7 +427,9 @@
   }
   .faculty-card:hover .faculty-card-inner { transform: rotateY(180deg); }
   .faculty-front, .faculty-back {
-    position: absolute; inset: 0; backface-visibility: hidden;
+    position: absolute; inset: 0;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     border-radius: var(--radius); overflow: hidden;
   }
   .faculty-front {
@@ -436,10 +438,11 @@
     box-shadow: 0 8px 40px rgba(0,0,0,0.4);
     display: flex; flex-direction: column; align-items: center;
     padding: 32px 24px; text-align: center;
+    transform: rotateY(0deg) translateZ(1px);
   }
   .faculty-back {
     background: linear-gradient(135deg, var(--teal-dark), #1a9e8c);
-    transform: rotateY(180deg);
+    transform: rotateY(180deg) translateZ(1px);
     display: flex; flex-direction: column; justify-content: center;
     padding: 32px 28px;
   }
@@ -1328,6 +1331,37 @@ function initStarfield() {
   
   const points = new THREE.Points(geom, mat);
   starsGroup.add(points);
+
+  // Create large twinkling sparkles in the Hero background
+  const sparkleCount = 35;
+  const sparkleGeom = new THREE.BufferGeometry();
+  const sparklePositions = new Float32Array(sparkleCount * 3);
+  const sparkleColors = new Float32Array(sparkleCount * 3);
+  
+  for (let i = 0; i < sparkleCount; i++) {
+    sparklePositions[i*3] = (Math.random() - 0.5) * 1400;
+    sparklePositions[i*3+1] = (Math.random() - 0.5) * 1000; // Keep Y closer to Hero (0)
+    sparklePositions[i*3+2] = (Math.random() - 0.5) * 600 + 200; // Positioned behind the Earth/globe
+    
+    sparkleColors[i*3] = 0.24;
+    sparkleColors[i*3+1] = 0.8;
+    sparkleColors[i*3+2] = 0.72;
+  }
+  
+  sparkleGeom.setAttribute('position', new THREE.BufferAttribute(sparklePositions, 3));
+  sparkleGeom.setAttribute('color', new THREE.BufferAttribute(sparkleColors, 3));
+  
+  const sparkleMat = new THREE.PointsMaterial({
+    size: 7.0,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.8,
+    blending: THREE.AdditiveBlending
+  });
+  
+  const sparkles = new THREE.Points(sparkleGeom, sparkleMat);
+  starsGroup.add(sparkles);
+  window.sparklesRef = sparkles;
 }
 
 let earthMesh;
@@ -1633,6 +1667,11 @@ function animate() {
   if (earthMesh) {
     earthMesh.rotation.y += 0.003;
     earthMesh.rotation.x += 0.001;
+  }
+  
+  if (window.sparklesRef) {
+    const time = Date.now() * 0.0025;
+    window.sparklesRef.material.opacity = 0.35 + Math.sin(time) * 0.35; // Twinkle breathing
   }
   
   planets.forEach(p => {
