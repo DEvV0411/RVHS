@@ -431,6 +431,7 @@
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     border-radius: var(--radius); overflow: hidden;
+    transition: opacity 0.4s ease, z-index 0.4s ease;
   }
   .faculty-front {
     background: var(--card-bg); border: 1px solid var(--card-border);
@@ -439,12 +440,30 @@
     display: flex; flex-direction: column; align-items: center;
     padding: 32px 24px; text-align: center;
     transform: rotateY(0deg) translateZ(1px);
+    z-index: 2;
+    opacity: 1;
+    pointer-events: auto;
   }
   .faculty-back {
     background: linear-gradient(135deg, var(--teal-dark), #1a9e8c);
     transform: rotateY(180deg) translateZ(1px);
     display: flex; flex-direction: column; justify-content: center;
     padding: 32px 28px;
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .faculty-card:hover .faculty-front,
+  .faculty-card.flipped .faculty-front {
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+  .faculty-card:hover .faculty-back,
+  .faculty-card.flipped .faculty-back {
+    opacity: 1;
+    z-index: 2;
+    pointer-events: auto;
   }
   .faculty-avatar {
     width: 116px; height: 116px; border-radius: 50%; overflow: hidden;
