@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Raj Vidya Higher Studies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #0c0914;
+      --panel-bg: rgba(22, 17, 36, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f1f6;
+      --text-sub: #9f9aa9;
+      --teal: #3ecdb8;
+      --teal-glow: rgba(62, 205, 184, 0.2);
+      --purple: #7b5ea7;
+      --purple-glow: rgba(123, 94, 167, 0.2);
+      --red: #ff4a6b;
+      --red-glow: rgba(255, 74, 107, 0.2);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(123, 94, 167, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(62, 205, 184, 0.1) 0%, transparent 45%);
+      background-attachment: fixed;
+    }
+    
+    /* Login Screen styles */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    
+    .login-card {
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .logo-container {
+      margin-bottom: 30px;
+    }
+    
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--text-main) 30%, var(--teal) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    
+    .logo-sub {
+      color: var(--text-sub);
+      font-size: 14px;
+      margin-top: 5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    
+    .form-group label {
+      display: block;
+      color: var(--text-sub);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .login-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+    
+    .login-input:focus {
+      outline: none;
+      border-color: var(--teal);
+      background: rgba(62, 205, 184, 0.05);
+      box-shadow: 0 0 10px var(--teal-glow);
+    }
+    
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, var(--teal) 0%, #2db4a0 100%);
+      color: #0c0914;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+    }
+    
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(62, 205, 184, 0.3);
+    }
+    
+    .login-error {
+      color: var(--red);
+      font-size: 14px;
+      margin-top: 15px;
+      display: none;
+    }
+    
+    /* Dashboard Screen Styles */
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      display: none;
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    .dash-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 20px;
+    }
+    
+    .dash-title h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    
+    .dash-title p {
+      color: var(--text-sub);
+      font-size: 15px;
+      margin-top: 4px;
+    }
+    
+    .btn-logout {
+      background: rgba(255, 74, 107, 0.1);
+      border: 1px solid rgba(255, 74, 107, 0.2);
+      color: var(--red);
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-logout:hover {
+      background: var(--red);
+      color: #fff;
+      box-shadow: 0 4px 15px var(--red-glow);
+    }
+    
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    
+    .stat-card {
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--purple);
+    }
+    
+    .stat-card.teal::before {
+      background: var(--teal);
+    }
+    
+    .stat-card.red::before {
+      background: var(--red);
+    }
+    
+    .stat-label {
+      color: var(--text-sub);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+    
+    .stat-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 36px;
+      font-weight: 700;
+      margin-top: 10px;
+    }
+    
+    /* Controls area */
+    .controls-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+    
+    .tab {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      padding: 10px 20px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 500;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .tab.active {
+      background: var(--teal);
+      color: #0c0914;
+      font-weight: 600;
+    }
+    
+    .search-box {
+      position: relative;
+      max-width: 320px;
+      width: 100%;
+    }
+    
+    .search-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 16px 12px 40px;
+      color: var(--text-main);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--teal);
+      background: rgba(62, 205, 184, 0.03);
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-sub);
+      pointer-events: none;
+    }
+    
+    /* Table styling */
+    .table-container {
+      background: var(--panel-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      margin-bottom: 40px;
+    }
+    
+    .table-wrapper {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+    
+    th {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      color: var(--text-sub);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(255, 255, 255, 0.01);
+    }
+    
+    td {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+      color: var(--text-main);
+    }
+    
+    tr:last-child td {
+      border-bottom: none;
+    }
+    
+    tr:hover td {
+      background: rgba(255, 255, 255, 0.01);
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .badge.inquiry {
+      background: rgba(123, 94, 167, 0.15);
+      color: #9d80d2;
+      border: 1px solid rgba(123, 94, 167, 0.2);
+    }
+    
+    .badge.demo {
+      background: rgba(62, 205, 184, 0.15);
+      color: var(--teal);
+      border: 1px solid rgba(62, 205, 184, 0.2);
+    }
+    
+    .badge.enroll {
+      background: rgba(255, 168, 74, 0.15);
+      color: #ffa84a;
+      border: 1px solid rgba(255, 168, 74, 0.2);
+    }
+    
+    .contact-details {
+      line-height: 1.4;
+    }
+    
+    .contact-name {
+      font-weight: 600;
+      font-size: 15px;
+    }
+    
+    .contact-sub {
+      color: var(--text-sub);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 3px;
+    }
+    
+    .copy-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-sub);
+      cursor: pointer;
+      font-size: 12px;
+      padding: 2px 5px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    
+    .copy-btn:hover {
+      color: var(--teal);
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .message-text {
+      max-width: 300px;
+      white-space: normal;
+      word-break: break-word;
+      color: var(--text-sub);
+      font-style: italic;
+    }
+    
+    .btn-delete {
+      background: rgba(255, 74, 107, 0.1);
+      border: none;
+      color: var(--red);
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .btn-delete:hover {
+      background: var(--red);
+      color: #fff;
+    }
+    
+    .no-data {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--text-sub);
+      font-size: 15px;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Config Reminder Modal styling if keys are placeholders */
+    .config-reminder {
+      background: rgba(255, 168, 74, 0.1);
+      border: 1px solid rgba(255, 168, 74, 0.2);
+      color: #ffa84a;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN PANEL -->
+  <div class="login-container" id="loginSection">
+    <div class="login-card">
+      <div class="logo-container">
+        <div class="logo-text">RAJ VIDYA</div>
+        <div class="logo-sub">Administration</div>
+      </div>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="adminEmail">Email Address</label>
+          <input type="email" id="adminEmail" class="login-input" required placeholder="admin@rajvidya.com">
+        </div>
+        
+        <div class="form-group">
+          <label for="adminPassword">Password</label>
+          <input type="password" id="adminPassword" class="login-input" required placeholder="••••••••">
+        </div>
+        
+        <button type="submit" class="btn-submit" id="loginBtn">Access Dashboard 🔒</button>
+      </form>
+      
+      <div class="login-error" id="loginError">Incorrect email or password. Please try again.</div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD PANEL -->
+  <div class="dashboard-container" id="dashSection">
+    <div class="dash-header">
+      <div class="dash-title">
+        <h1>Raj Vidya Admissions</h1>
+        <p>Real-time Student Inquiries & Course Enrollment Dashboard</p>
+      </div>
+      <button class="btn-logout" id="logoutBtn">Logout 🚪</button>
+    </div>
+    
+    <!-- Config placeholder reminder (shows if YOUR_API_KEY is not replaced) -->
+    <div class="config-reminder" id="configReminder" style="display:none;">
+      <span>⚠️ <strong>Firebase Configuration Required:</strong> Please replace the placeholder credential strings inside [admin.html] and [rajvidya_website.html] with your active Firebase Web App credentials to enable real-time storage.</span>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <span class="stat-label">Total Leads</span>
+        <div class="stat-val" id="statTotal">0</div>
+      </div>
+      <div class="stat-card teal">
+        <span class="stat-label">Course Enrollments</span>
+        <div class="stat-val" id="statEnroll">0</div>
+      </div>
+      <div class="stat-card red">
+        <span class="stat-label">Contact Inquiries</span>
+        <div class="stat-val" id="statInquiry">0</div>
+      </div>
+    </div>
+
+    <!-- Controls Row -->
+    <div class="controls-row">
+      <div class="tabs">
+        <button class="tab active" data-filter="all">All Submissions</button>
+        <button class="tab" data-filter="inquiry">Contact Inquiries</button>
+        <button class="tab" data-filter="enroll">Enrollments & Demos</button>
+      </div>
+      
+      <div class="search-box">
+        <svg class="search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by name, email, phone...">
+      </div>
+    </div>
+
+    <!-- Submissions Table -->
+    <div class="table-container">
+      <div class="table-wrapper">
+        <table id="submissionsTable">
+          <thead>
+            <tr>
+              <th>Date / Time</th>
+              <th>Type</th>
+              <th>Student Details</th>
+              <th>Subject</th>
+              <th>Board / Plan</th>
+              <th>Additional Info / Notes</th>
+              <th style="width: 50px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="7" class="no-data">Loading admissions data...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getFirestore, collection, getDocs, deleteDoc, doc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+    // Paste your Firebase SDK credentials here:
+    const firebaseConfig = {
+      apiKey: "AIzaSyChXqqWmSaoPItBblXPBRnGzmGmCd5Q2z8",
+      authDomain: "rvhs-5a913.firebaseapp.com",
+      projectId: "rvhs-5a913",
+      storageBucket: "rvhs-5a913.firebasestorage.app",
+      messagingSenderId: "245832735314",
+      appId: "1:245832735314:web:9ffa00c0d15ab593e4dd8b",
+      measurementId: "G-M4VDKL5JJ6"
+    };
+
+    // Global variables
+    let db, auth;
+    let submissions = [];
+    let currentFilter = 'all';
+
+    // Check configuration
+    if (firebaseConfig.apiKey === "YOUR_API_KEY") {
+      document.getElementById('configReminder').style.display = 'flex';
+    }
+
+    // Initialize Firebase
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      auth = getAuth(app);
+    } catch (e) {
+      console.error("Firebase SDK init error:", e);
+    }
+
+    // Handle Authentication UI Changes
+    if (auth) {
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          // Logged in
+          document.getElementById('loginSection').style.display = 'none';
+          document.getElementById('dashSection').style.display = 'block';
+          // Start listening to database in real-time
+          listenToSubmissions();
+        } else {
+          // Logged out
+          document.getElementById('loginSection').style.display = 'flex';
+          document.getElementById('dashSection').style.display = 'none';
+        }
+      });
+    }
+
+    // Login Form Submit handler
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      const errorDiv = document.getElementById('loginError');
+      const loginBtn = document.getElementById('loginBtn');
+      
+      errorDiv.style.display = 'none';
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Verifying Credentials...';
+
+      if (!auth) {
+        errorDiv.textContent = "Firebase is not properly configured. Please check code credentials.";
+        errorDiv.style.display = 'block';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Access Dashboard 🔒';
+        return;
+      }
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Access Dashboard 🔒';
+        })
+        .catch((err) => {
+          console.error(err);
+          errorDiv.textContent = "Access denied: " + err.message.replace("Firebase: ", "");
+          errorDiv.style.display = 'block';
+          loginBtn.disabled = false;
+          loginBtn.textContent = 'Access Dashboard 🔒';
+        });
+    });
+
+    // Logout Action
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      if (auth) {
+        signOut(auth).catch(err => console.error(err));
+      }
+    });
+
+    // Real-time Database Listener
+    let unsubscribeSnap = null;
+    function listenToSubmissions() {
+      if (unsubscribeSnap) unsubscribeSnap();
+      
+      const q = query(collection(db, "submissions"), orderBy("timestamp", "desc"));
+      unsubscribeSnap = onSnapshot(q, (snapshot) => {
+        submissions = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          submissions.push({
+            id: doc.id,
+            ...data,
+            // Format timestamp
+            dateString: data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString() : 'Just now'
+          });
+        });
+        
+        updateStats();
+        renderSubmissions();
+      }, (error) => {
+        console.error("Firestore read error:", error);
+        document.getElementById('tableBody').innerHTML = `
+          <tr>
+            <td colspan="7" class="no-data" style="color:var(--red);">
+              🔒 Permission Denied: Ensure Firebase security rules permit read access to authenticated admins.
+            </td>
+          </tr>`;
+      });
+    }
+
+    // Stats Counter
+    function updateStats() {
+      const total = submissions.length;
+      const inquiries = submissions.filter(s => s.type === "Contact Inquiry").length;
+      const enrolls = total - inquiries;
+      
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statEnroll').textContent = enrolls;
+      document.getElementById('statInquiry').textContent = inquiries;
+    }
+
+    // Copy Utility
+    window.copyText = function(text, btn) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.color = 'var(--teal)';
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.color = '';
+        }, 1500);
+      });
+    }
+
+    // Delete Submission
+    window.deleteSubmission = function(id) {
+      if (confirm("Are you sure you want to delete this admission record permanently?")) {
+        deleteDoc(doc(db, "submissions", id))
+          .then(() => {
+            console.log("Document successfully deleted");
+          })
+          .catch((error) => {
+            alert("Error deleting record: " + error.message);
+          });
+      }
+    }
+
+    // Render Table based on filters and search queries
+    function renderSubmissions() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase().trim();
+      const tbody = document.getElementById('tableBody');
+      
+      // Filter list
+      let filtered = submissions;
+      if (currentFilter === 'inquiry') {
+        filtered = submissions.filter(s => s.type === 'Contact Inquiry');
+      } else if (currentFilter === 'enroll') {
+        filtered = submissions.filter(s => s.type !== 'Contact Inquiry');
+      }
+      
+      // Search filter
+      if (searchVal) {
+        filtered = filtered.filter(s => 
+          s.name?.toLowerCase().includes(searchVal) ||
+          s.email?.toLowerCase().includes(searchVal) ||
+          s.phone?.toLowerCase().includes(searchVal) ||
+          s.subject?.toLowerCase().includes(searchVal) ||
+          s.board?.toLowerCase().includes(searchVal) ||
+          s.plan?.toLowerCase().includes(searchVal)
+        );
+      }
+      
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="no-data">No submissions found.</td></tr>`;
+        return;
+      }
+      
+      tbody.innerHTML = filtered.map(item => {
+        let typeBadge = '';
+        if (item.type === 'Contact Inquiry') {
+          typeBadge = '<span class="badge inquiry">Inquiry</span>';
+        } else if (item.type === 'Free Demo Request') {
+          typeBadge = '<span class="badge demo">Demo Request</span>';
+        } else {
+          typeBadge = '<span class="badge enroll">Enrollment</span>';
+        }
+
+        const emailEscaped = item.email ? item.email.replace(/'/g, "\\'") : '';
+        const phoneEscaped = item.phone ? item.phone.replace(/'/g, "\\'") : '';
+        
+        return `
+          <tr>
+            <td style="font-size: 13px; color: var(--text-sub); font-weight: 500;">
+              ${item.dateString}
+            </td>
+            <td>
+              ${typeBadge}
+            </td>
+            <td>
+              <div class="contact-details">
+                <div class="contact-name">${item.name || 'Anonymous'}</div>
+                <div class="contact-sub">
+                  <span>${item.email || 'N/A'}</span>
+                  ${item.email ? `<button class="copy-btn" onclick="copyText('${emailEscaped}', this)">Copy</button>` : ''}
+                </div>
+                <div class="contact-sub">
+                  <span>${item.phone || 'N/A'}</span>
+                  ${item.phone ? `<button class="copy-btn" onclick="copyText('${phoneEscaped}', this)">Copy</button>` : ''}
+                </div>
+              </div>
+            </td>
+            <td style="font-weight: 500;">
+              ${item.subject || 'N/A'}
+            </td>
+            <td>
+              <div>${item.board || item.plan || 'N/A'}</div>
+              ${item.amount ? `<div style="font-size:12px; color:var(--teal); font-weight: 600; margin-top:2px;">₹${item.amount.toLocaleString()}</div>` : ''}
+            </td>
+            <td>
+              <div class="message-text">${item.message || '—'}</div>
+            </td>
+            <td>
+              <button class="btn-delete" onclick="deleteSubmission('${item.id}')" title="Delete record">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Tabs Event Listeners
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        e.target.classList.add('active');
+        currentFilter = e.target.dataset.filter;
+        renderSubmissions();
+      });
+    });
+
+    // Search Input Event Listener
+    document.getElementById('searchInput').addEventListener('input', renderSubmissions);
+  </script>
+</body>
+</html>
