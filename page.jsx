@@ -1640,7 +1640,7 @@ export default function RajVidyaPage() {
           setTimeout(() => {
             alert(`Thank you, ${name}!\nWe've received your inquiry and will call you at ${phone} within 24 hours.\n\nRaj Vidya Higher Studies`)
             btn.disabled = false
-            btn.textContent = "LAUNCH DEMO"
+            btn.textContent = "Send Message 📨"
             e.target.reset()
           }, 1200)
         }
