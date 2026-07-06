@@ -495,17 +495,21 @@
       
       <form id="loginForm">
         <div class="form-group">
-          <label for="adminEmail">Email Address</label>
+          <label for="adminEmail" id="emailLabel">Email Address</label>
           <input type="email" id="adminEmail" class="login-input" required placeholder="admin@rajvidya.com">
         </div>
         
         <div class="form-group">
-          <label for="adminPassword">Password</label>
+          <label for="adminPassword" id="passLabel">Password</label>
           <input type="password" id="adminPassword" class="login-input" required placeholder="••••••••">
         </div>
         
         <button type="submit" class="btn-submit" id="loginBtn">Access Dashboard 🔒</button>
       </form>
+      
+      <p style="margin-top:20px; font-size:13px; color:var(--text-sub);">
+        <a href="#" id="toggleModeBtn" style="color:var(--teal); text-decoration:none; font-weight:600;">Register New Admin Account</a>
+      </p>
       
       <div class="login-error" id="loginError">Incorrect email or password. Please try again.</div>
     </div>
@@ -588,7 +592,7 @@
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
     import { getFirestore, collection, getDocs, deleteDoc, doc, onSnapshot, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
 
     // Paste your Firebase SDK credentials here:
     const firebaseConfig = {
@@ -605,6 +609,7 @@
     let db, auth;
     let submissions = [];
     let currentFilter = 'all';
+    let authMode = 'login'; // 'login' or 'register'
 
     // Check configuration
     if (firebaseConfig.apiKey === "YOUR_API_KEY") {
@@ -619,6 +624,25 @@
     } catch (e) {
       console.error("Firebase SDK init error:", e);
     }
+
+    // Toggle Mode logic
+    document.getElementById('toggleModeBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      const toggleBtn = document.getElementById('toggleModeBtn');
+      const loginBtn = document.getElementById('loginBtn');
+      const errorDiv = document.getElementById('loginError');
+      errorDiv.style.display = 'none';
+
+      if (authMode === 'login') {
+        authMode = 'register';
+        loginBtn.textContent = 'Register Admin Account ➕';
+        toggleBtn.textContent = 'Already have an account? Login';
+      } else {
+        authMode = 'login';
+        loginBtn.textContent = 'Access Dashboard 🔒';
+        toggleBtn.textContent = 'Register New Admin Account';
+      }
+    });
 
     // Handle Authentication UI Changes
     if (auth) {
@@ -647,28 +671,44 @@
       
       errorDiv.style.display = 'none';
       loginBtn.disabled = true;
-      loginBtn.textContent = 'Verifying Credentials...';
-
+      
       if (!auth) {
-        errorDiv.textContent = "Firebase is not properly configured. Please check code credentials.";
+        errorDiv.textContent = "Firebase is not properly configured. Please check credentials.";
         errorDiv.style.display = 'block';
         loginBtn.disabled = false;
-        loginBtn.textContent = 'Access Dashboard 🔒';
         return;
       }
 
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          loginBtn.disabled = false;
-          loginBtn.textContent = 'Access Dashboard 🔒';
-        })
-        .catch((err) => {
-          console.error(err);
-          errorDiv.textContent = "Access denied: " + err.message.replace("Firebase: ", "");
-          errorDiv.style.display = 'block';
-          loginBtn.disabled = false;
-          loginBtn.textContent = 'Access Dashboard 🔒';
-        });
+      if (authMode === 'login') {
+        loginBtn.textContent = 'Verifying Credentials...';
+        signInWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Access Dashboard 🔒';
+          })
+          .catch((err) => {
+            console.error(err);
+            errorDiv.textContent = "Access denied: " + err.message.replace("Firebase: ", "");
+            errorDiv.style.display = 'block';
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Access Dashboard 🔒';
+          });
+      } else {
+        loginBtn.textContent = 'Creating Account...';
+        createUserWithEmailAndPassword(auth, email, password)
+          .then(() => {
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Register Admin Account ➕';
+            alert("Admin account created successfully!");
+          })
+          .catch((err) => {
+            console.error(err);
+            errorDiv.textContent = "Registration failed: " + err.message.replace("Firebase: ", "");
+            errorDiv.style.display = 'block';
+            loginBtn.disabled = false;
+            loginBtn.textContent = 'Register Admin Account ➕';
+          });
+      }
     });
 
     // Logout Action
