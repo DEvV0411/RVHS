@@ -111,32 +111,6 @@
     transform: translateY(0);
   }
 
-  /* Sound Toggle */
-  #sound-toggle {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: transparent;
-    color: var(--teal);
-    border: 1px solid rgba(62,205,184,0.4);
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.3s;
-  }
-  #sound-toggle:hover {
-    background: rgba(62,205,184,0.1);
-    border-color: var(--teal);
-  }
-  #sound-toggle.sound-on {
-    background: rgba(62,205,184,0.2);
-    border-color: var(--teal);
-    box-shadow: 0 0 10px rgba(62,205,184,0.4);
-  }
-
   /* Entrance Loader */
   #loader {
     position: fixed;
@@ -800,9 +774,6 @@
     
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <button id="sound-toggle" onclick="toggleMute()" style="margin-right: 12px;">
-    <span class="sound-icon">🔈</span> Sound Off
-  </button>
   <button class="nav-cta" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Book Demo</button>
 </nav>
 
@@ -1208,72 +1179,6 @@
   </div>
 </div>
 <script>
-/* ── WEB AUDIO COSMIC SYNTH ── */
-let audioCtx = null;
-let humOsc = null;
-let chordOsc1 = null;
-let chordOsc2 = null;
-let isMuted = true;
-
-function initAudio() {
-  if (audioCtx) return;
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  
-  humOsc = audioCtx.createOscillator();
-  humOsc.type = 'sawtooth';
-  humOsc.frequency.setValueAtTime(55, audioCtx.currentTime); // A1 note
-  
-  const filter = audioCtx.createBiquadFilter();
-  filter.type = 'lowpass';
-  filter.frequency.setValueAtTime(150, audioCtx.currentTime);
-  
-  const humGain = audioCtx.createGain();
-  humGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-  
-  humOsc.connect(filter);
-  filter.connect(humGain);
-  humGain.connect(audioCtx.destination);
-  humOsc.start();
-  
-  chordOsc1 = audioCtx.createOscillator();
-  chordOsc1.type = 'sine';
-  chordOsc1.frequency.setValueAtTime(220, audioCtx.currentTime); // A3
-  
-  chordOsc2 = audioCtx.createOscillator();
-  chordOsc2.type = 'sine';
-  chordOsc2.frequency.setValueAtTime(277.18, audioCtx.currentTime); // C#4
-  
-  const chordFilter = audioCtx.createBiquadFilter();
-  chordFilter.type = 'lowpass';
-  chordFilter.frequency.setValueAtTime(400, audioCtx.currentTime);
-  
-  const chordGain = audioCtx.createGain();
-  chordGain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-  
-  chordOsc1.connect(chordFilter);
-  chordOsc2.connect(chordFilter);
-  chordFilter.connect(chordGain);
-  chordGain.connect(audioCtx.destination);
-  chordOsc1.start();
-  chordOsc2.start();
-  
-  audioCtx.suspend();
-}
-
-function toggleMute() {
-  initAudio();
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-    isMuted = false;
-    document.getElementById('sound-toggle').classList.add('sound-on');
-    document.getElementById('sound-toggle').innerHTML = `<span class="sound-icon">🔊</span> Sound On`;
-  } else {
-    audioCtx.suspend();
-    isMuted = true;
-    document.getElementById('sound-toggle').classList.remove('sound-on');
-    document.getElementById('sound-toggle').innerHTML = `<span class="sound-icon">🔈</span> Sound Off`;
-  }
-}
 
 /* ── THREE.JS MASTER INITIALIZATION ── */
 let scene, camera, renderer;
